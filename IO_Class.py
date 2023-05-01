@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 import os
 from PIL import Image
 import cairosvg
+import io
 
 class UnsupportedFileFormatException(Exception):
     pass
