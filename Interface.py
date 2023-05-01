@@ -10,6 +10,9 @@ class ImageProcessingInterface:
     def read_image(self, filepath: str) -> np.ndarray:
         try:
             return self.image_handler.read_image(filepath)
+        except UnsupportedFileFormatException as e:
+            print(e)
+            return None
         except Exception as e:
             print(f"Error reading image: {e}")
             return None
@@ -20,6 +23,9 @@ class ImageProcessingInterface:
             return False
         try:
             return self.image_handler.write_image(filepath, image)
+        except UnsupportedFileFormatException as e:
+            print(e)
+            return False
         except Exception as e:
             print(f"Error writing image: {e}")
             return False
