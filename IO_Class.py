@@ -13,6 +13,24 @@ class AbstractImageHandler(ABC):
     def write_image(self, filepath: str, image: np.ndarray) -> bool:
         pass
 
+import struct
+import numpy as np
+from abc import ABC, abstractmethod
+import os
+from PIL import Image
+
+class UnsupportedFileFormatException(Exception):
+    pass
+
+class AbstractImageHandler(ABC):
+    @abstractmethod
+    def read_image(self, filepath: str) -> np.ndarray:
+        pass
+
+    @abstractmethod
+    def write_image(self, filepath: str, image: np.ndarray) -> bool:
+        pass
+
 class BMPHandler(AbstractImageHandler):
     def read_image(self, filepath: str) -> np.ndarray:
         try:
@@ -20,6 +38,9 @@ class BMPHandler(AbstractImageHandler):
                 header = f.read(54)
                 width, height, bits_per_pixel = struct.unpack("<3I", header[18:30])
                 data = f.read()
+        except FileNotFoundError:
+            print(f"Error: File '{filepath}' not found.")
+            return None
         except IOError:
             print(f"Error: Unable to open file '{filepath}'.")
             return None
@@ -87,6 +108,9 @@ class JPEGHandler(AbstractImageHandler):
             img = Image.open(filepath)
             img_array = np.array(img)
             return img_array
+        except FileNotFoundError:
+            print(f"Error: File '{filepath}' not found.")
+            return None
         except IOError as e:
             print(f"Error reading JPEG file: {e}")
             return None
@@ -106,6 +130,9 @@ class PNGHandler(AbstractImageHandler):
             img = Image.open(filepath)
             img_array = np.array(img)
             return img_array
+        except FileNotFoundError:
+            print(f"Error: File '{filepath}' not found.")
+            return None
         except IOError as e:
             print(f"Error reading PNG file: {e}")
             return None
@@ -133,4 +160,21 @@ class ImageHandlerFactory:
         if file_extension in ImageHandlerFactory.handlers:
             return ImageHandlerFactory.handlers[file_extension]()
         else:
-            raise ValueError(f"Unsupported file format: {file_extension}")
+            raise UnsupportedFileFormatException(f"Unsupported file format: {file_extension}")
+
+class UnifiedImageHandler(AbstractImageHandler):
+    def read_image(self, filepath: str) -> np.ndarray:
+        try:
+            handler = ImageHandlerFactory.get_handler(filepath)
+            return handler.read_image(filepath)
+        except UnsupportedFileFormatException as e:
+            print(e)
+            return None
+
+    def write_image(self, filepath: str, image: np.ndarray) -> bool:
+        try:
+            handler = ImageHandlerFactory.get_handler(filepath)
+            return handler.write_image(filepath, image)
+        except UnsupportedFileFormatException as e:
+            print(e)
+            return False
