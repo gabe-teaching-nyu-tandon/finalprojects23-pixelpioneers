@@ -4,21 +4,6 @@ from abc import ABC, abstractmethod
 import os
 from PIL import Image
 
-class AbstractImageHandler(ABC):
-    @abstractmethod
-    def read_image(self, filepath: str) -> np.ndarray:
-        pass
-
-    @abstractmethod
-    def write_image(self, filepath: str, image: np.ndarray) -> bool:
-        pass
-
-import struct
-import numpy as np
-from abc import ABC, abstractmethod
-import os
-from PIL import Image
-
 class UnsupportedFileFormatException(Exception):
     pass
 
