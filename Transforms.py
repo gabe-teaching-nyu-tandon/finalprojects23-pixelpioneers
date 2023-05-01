@@ -1,7 +1,7 @@
 import numpy as np
 from abc import ABC, abstractmethod
 
-class InvalidImageArray(Exception):
+class UnsupportedTransformException(Exception):
     pass
 
 class AbstractImageTransformer(ABC):
@@ -11,15 +11,16 @@ class AbstractImageTransformer(ABC):
 
 class GrayscaleTransformer(AbstractImageTransformer):
     def transform_image(self, image: np.ndarray) -> np.ndarray:
-        if image is None or image.ndim != 3 or image.shape[-1] != 3:
-            raise InvalidImageArray("Invalid or corrupted image array. Must be a 3D array with 3 channels.")
-
-        grayscale_image = np.dot(image[..., :3], [0.2989, 0.5870, 0.1140])
-        return np.stack((grayscale_image,) * 3, axis=-1)
+        if image.ndim == 3:
+            return np.dot(image[...,:3], [0.2989, 0.5870, 0.1140]).astype(np.uint8)
+        elif image.ndim == 2:
+            return image
+        else:
+            raise ValueError("Invalid image dimensions. Expected 2 or 3 dimensions.")
 
 class ImageTransformerFactory:
     transformers = {
-        "grayscale": GrayscaleTransformer
+        "grayscale": GrayscaleTransformer,
     }
 
     @staticmethod
@@ -27,16 +28,13 @@ class ImageTransformerFactory:
         if transform.lower() in ImageTransformerFactory.transformers:
             return ImageTransformerFactory.transformers[transform.lower()]()
         else:
-            raise KeyError(f"Unsupported transformation: {transform}")
+            raise UnsupportedTransformException(f"Unsupported transform: {transform}")
 
 class UnifiedImageTransformer(AbstractImageTransformer):
     def transform_image(self, transform: str, image: np.ndarray) -> np.ndarray:
         try:
             transformer = ImageTransformerFactory.get_transformer(transform)
             return transformer.transform_image(image)
-        except KeyError as e:
-            print(e)
-            return None
-        except InvalidImageArray as e:
+        except UnsupportedTransformException as e:
             print(e)
             return None
