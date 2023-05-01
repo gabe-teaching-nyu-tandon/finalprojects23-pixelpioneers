@@ -3,6 +3,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 import os
 from PIL import Image
+import cairosvg
 
 class UnsupportedFileFormatException(Exception):
     pass
@@ -130,6 +131,24 @@ class PNGHandler(AbstractImageHandler):
         except IOError as e:
             print(f"Error writing PNG file: {e}")
             return False
+        
+class SVGHandler(AbstractImageHandler):
+    def read_image(self, filepath: str) -> np.ndarray:
+        try:
+            png_bytes = cairosvg.svg2png(url=filepath)
+            img = Image.open(io.BytesIO(png_bytes))
+            img_array = np.array(img)
+            return img_array
+        except FileNotFoundError:
+            print(f"Error: File '{filepath}' not found.")
+            return None
+        except Exception as e:
+            print(f"Error reading SVG file: {e}")
+            return None
+
+    def write_image(self, filepath: str, image: np.ndarray) -> bool:
+        print("Writing SVG files is not supported. Please convert the image to a supported format (e.g., PNG, JPEG, BMP) before writing.")
+        return False
 
 class ImageHandlerFactory:
     handlers = {
@@ -137,6 +156,7 @@ class ImageHandlerFactory:
         ".jpeg": JPEGHandler,
         ".jpg": JPEGHandler,
         ".png": PNGHandler,
+        ".svg": SVGHandler,
     }
 
     @staticmethod
