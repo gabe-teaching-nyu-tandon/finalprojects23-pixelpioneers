@@ -2,7 +2,7 @@ import struct
 import numpy as np
 from abc import ABC, abstractmethod
 import os
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import cairosvg
 import io
 
@@ -18,11 +18,38 @@ class AbstractImageHandler(ABC):
     def write_image(self, filepath: str, image: np.ndarray) -> bool:
         pass
 
+class CorruptedBMPError(Exception):
+    pass
+
+class CorruptedImageDataError(Exception):
+    pass
+
 class BMPHandler(AbstractImageHandler):
+    def is_valid_image_data(self, image: np.ndarray) -> bool:
+        if image is None:
+            return False
+        if image.ndim != 3 or image.shape[2] != 3:
+            return False
+        return True
+    
+    def is_valid_bmp_header(self, header: bytes) -> bool:
+        # Check if the BMP header starts with "BM"
+        if header[0:2] != b"BM":
+            return False
+
+        # Check if the header size is 54 bytes
+        header_size = struct.unpack("<I", header[10:14])[0]
+        if header_size != 54:
+            return False
+
+        return True
+
     def read_image(self, filepath: str) -> np.ndarray:
         try:
             with open(filepath, 'rb') as f:
                 header = f.read(54)
+                if not self.is_valid_bmp_header(header):
+                    raise CorruptedBMPError()
                 width, height, bits_per_pixel = struct.unpack("<3I", header[18:30])
                 data = f.read()
         except FileNotFoundError:
@@ -31,11 +58,14 @@ class BMPHandler(AbstractImageHandler):
         except IOError:
             print(f"Error: Unable to open file '{filepath}'.")
             return None
+        except CorruptedBMPError:
+            print("Error: Corrupted BMP file.")
+            return None
         except struct.error:
             print("Error: Invalid BMP header.")
             return None
 
-        # Calculate the padding for each row
+# Calculate the padding for each row
         padding = (4 - (width * 3) % 4) % 4
 
         try:
@@ -74,13 +104,15 @@ class BMPHandler(AbstractImageHandler):
 
         # Write the image data
         data = b""
-        for y in range(height - 1, -1, -1):
-            for x in range(width):
-                b, g, r = image[y, x]
-                data += struct.pack("BBB", b, g, r)
-            data += b"\x00" * padding
-
         try:
+            if not self.is_valid_image_data(image):
+                raise CorruptedImageDataError()
+            for y in range(height - 1, -1, -1):
+                for x in range(width):
+                    b, g, r = image[y, x]
+                    data += struct.pack("BBB", b, g, r)
+                data += b"\x00" * padding
+
             with open(filepath, "wb") as f:
                 f.write(header)
                 f.write(data)
@@ -88,8 +120,18 @@ class BMPHandler(AbstractImageHandler):
         except IOError:
             print(f"Error: Unable to save file '{filepath}'.")
             return False
+        except CorruptedImageDataError:
+            print("Error: Corrupted image data.")
+            return False
 
 class JPEGHandler(AbstractImageHandler):
+    def is_valid_image_data(self, image: np.ndarray) -> bool:
+        if image is None:
+            return False
+        if image.ndim != 3 or image.shape[2] != 3:
+            return False
+        return True
+    
     def read_image(self, filepath: str) -> np.ndarray:
         try:
             img = Image.open(filepath)
@@ -97,6 +139,9 @@ class JPEGHandler(AbstractImageHandler):
             return img_array
         except FileNotFoundError:
             print(f"Error: File '{filepath}' not found.")
+            return None
+        except UnidentifiedImageError:
+            print(f"Error: Corrupted JPEG file.")
             return None
         except IOError as e:
             print(f"Error reading JPEG file: {e}")
@@ -104,14 +149,26 @@ class JPEGHandler(AbstractImageHandler):
 
     def write_image(self, filepath: str, image: np.ndarray) -> bool:
         try:
+            if not self.is_valid_image_data(image):
+                raise CorruptedImageDataError()
             img = Image.fromarray(image)
             img.save(filepath)
             return True
         except IOError as e:
             print(f"Error writing JPEG file: {e}")
             return False
+        except CorruptedImageDataError:
+            print("Error: Corrupted image data.")
+            return False
 
 class PNGHandler(AbstractImageHandler):
+    def is_valid_image_data(self, image: np.ndarray) -> bool:
+        if image is None:
+            return False
+        if image.ndim != 3 or image.shape[2] != 3:
+            return False
+        return True
+    
     def read_image(self, filepath: str) -> np.ndarray:
         try:
             img = Image.open(filepath)
@@ -120,20 +177,31 @@ class PNGHandler(AbstractImageHandler):
         except FileNotFoundError:
             print(f"Error: File '{filepath}' not found.")
             return None
+        except UnidentifiedImageError:
+            print(f"Error: Corrupted PNG file.")
+            return None
         except IOError as e:
             print(f"Error reading PNG file: {e}")
             return None
 
     def write_image(self, filepath: str, image: np.ndarray) -> bool:
         try:
+            if not self.is_valid_image_data(image):
+                raise CorruptedImageDataError()
             img = Image.fromarray(image)
             img.save(filepath)
             return True
         except IOError as e:
             print(f"Error writing PNG file: {e}")
             return False
+        except CorruptedImageDataError:
+            print("Error: Corrupted image data.")
+            return False
         
 class SVGHandler(AbstractImageHandler):
+    def is_valid_image_data(self, image: np.ndarray) -> bool:
+        return False
+    
     def read_image(self, filepath: str) -> np.ndarray:
         try:
             png_bytes = cairosvg.svg2png(url=filepath)
@@ -143,12 +211,19 @@ class SVGHandler(AbstractImageHandler):
         except FileNotFoundError:
             print(f"Error: File '{filepath}' not found.")
             return None
+        except UnidentifiedImageError:
+            print(f"Error: Corrupted SVG file.")
+            return None
         except Exception as e:
             print(f"Error reading SVG file: {e}")
             return None
 
     def write_image(self, filepath: str, image: np.ndarray) -> bool:
-        print("Writing SVG files is not supported. Please convert the image to a supported format (e.g., PNG, JPEG, BMP) before writing.")
+        try:
+            if not self.is_valid_image_data(image):
+                raise CorruptedImageDataError()
+        except CorruptedImageDataError:
+            print("Error: Writing SVG files is not supported. Please convert the image to a supported format (e.g., PNG, JPEG, BMP) before writing.")
         return False
 
 class ImageHandlerFactory:
