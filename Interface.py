@@ -30,12 +30,12 @@ class ImageProcessingInterface:
             print(f"Error writing image: {e}")
             return False
 
-    def apply_transform(self, transform: str, image: np.ndarray) -> np.ndarray:
+    def apply_transform(self, transform: str, image: np.ndarray, *args, **kwargs) -> np.ndarray:
         if image is None:
             print("Error: Image is None, cannot apply transformation.")
             return None
         try:
-            return self.image_transformer.transform_image(transform, image)
+            return self.image_transformer.transform_image(transform, image, *args, **kwargs)
         except UnsupportedTransformException as e:
             print(e)
             return None
