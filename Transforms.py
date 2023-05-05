@@ -86,6 +86,18 @@ class CropTransformer(AbstractImageTransformer):
         except Exception as e:
             print(f"Error cropping image: {e}")
             return None
+        
+class InvertColorTransformer(AbstractImageTransformer):
+    def transform_image(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
+        try:
+            if image is None:
+                raise ValueError("Input image is None.")
+            if image.ndim != 3 and image.ndim != 2:
+                raise ValueError("Invalid image dimensions. Expected 2 or 3 dimensions.")
+            return 255 - image
+        except Exception as e:
+            print(f"Error inverting colors: {e}")
+            return None
 
 class ImageTransformerFactory:
     transformers = {
@@ -94,6 +106,7 @@ class ImageTransformerFactory:
         "rotate": RotateTransformer,
         "flip": FlipTransformer,
         "crop": CropTransformer,
+        "invert": InvertColorTransformer,
     }
 
     @staticmethod
