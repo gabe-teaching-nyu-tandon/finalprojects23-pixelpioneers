@@ -10,18 +10,28 @@ class AbstractImageAdjustment(ABC):
         pass
 
 class BrightnessAdjustment(AbstractImageAdjustment):
-    def apply_adjustment(self, image: np.ndarray, factor: float) -> np.ndarray:
+    def apply_adjustment(self, image: np.ndarray, value: float) -> np.ndarray:
         if image is None:
-            raise ValueError("Invalid image input. Image is None.")
+            raise ValueError("Image is None, cannot apply brightness adjustment.")
 
-        if image.ndim != 3 or image.shape[2] != 3:
-            raise ValueError("Invalid image dimensions. Expected 3 dimensions with 3 color channels.")
+        if image.ndim < 2 or image.ndim > 3:
+            raise ValueError("Invalid image dimensions. Expected 2 or 3 dimensions.")
 
-        if not isinstance(factor, (int, float)):
-            raise ValueError("Invalid factor input. Expected int or float value.")
+        if not (-255.0 <= value <= 255.0):
+            raise ValueError("Invalid brightness adjustment value. Expected a value between -255 and 255.")
 
-        adjusted_image = np.clip(image * factor, 0, 255).astype(np.uint8)
-        return adjusted_image
+        try:
+            # Convert image to float to avoid overflow
+            img_float = image.astype(np.float32)
+
+            # Apply brightness adjustment
+            img_float += value
+
+            # Clip the values to [0, 255] and convert back to uint8
+            img_adjusted = np.clip(img_float, 0, 255).astype(np.uint8)
+            return img_adjusted
+        except Exception as e:
+            raise ValueError(f"Error adjusting brightness: {e}")
 
 class ImageAdjustmentFactory:
     adjustments = {
