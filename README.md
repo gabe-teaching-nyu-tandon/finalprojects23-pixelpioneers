@@ -1,1 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/8Z1lxzU_)
+# PixelPioneers: A Lightweight Python Library for Essential Image Processing
+
+PixelPioneers is a lightweight Python library designed to perform basic image processing tasks, such as color representation and filtering. This library aims to provide a user-friendly interface and easy-to-understand functions for developers and researchers who require essential image processing capabilities without the extensive features of more complex libraries like OpenCV.
