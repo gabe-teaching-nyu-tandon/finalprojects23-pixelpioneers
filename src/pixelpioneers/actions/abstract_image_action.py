@@ -11,3 +11,7 @@ class AbstractImageAction(ABC):
 
     def apply(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
         pass
+
+    @staticmethod
+    def get_actions():
+        pass
