@@ -6,10 +6,10 @@ from pixelpioneers.actions.abstract_image_action import AbstractImageAction
 
 
 class AbstractImageAdjustment(AbstractImageAction):
-    name = "AbstractImageAdjustment"
+    name = super.name + "AbstractImageAdjustment"
 
     def __init__(self):
-        pass
+        super(AbstractImageAdjustment, self).__init__()
 
     @abstractmethod
     def apply(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
