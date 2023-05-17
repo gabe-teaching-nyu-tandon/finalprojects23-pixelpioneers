@@ -21,9 +21,17 @@ class PNGHandler(AbstractImageReader, AbstractImageWriter):
             raise ImageIOError
 
     def write(self, path: str, image: np.ndarray) -> bool:
-        img = Image.fromarray(image)
-        img.save(path)
-        return True
+        try:
+            img = Image.fromarray(image)
+            img.save(path)
+            return True
+        except IOError as ioe:
+            raise ImageIOError(f"Error writing image: {ioe}")
+
+        except Exception as e:
+            raise ImageIOError
+
+
 
 if __name__ == "__main__":
     pngHandler = PNGHandler()
