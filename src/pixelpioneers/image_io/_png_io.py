@@ -12,7 +12,13 @@ class PNGHandler(AbstractImageReader, AbstractImageWriter):
         img = Image.open(path, formats=["png"])
         img_array = np.array(img)
         return img_array
+    
+    def write(self, path: str, image: np.ndarray) -> bool:
+        img = Image.fromarray(image)
+        img.save(path)
+        return True
 
 if __name__ == "__main__":
     pngHandler = PNGHandler()
     img = pngHandler.read("data/sample.png")
+    pngHandler.write("data/sample_out.png", img)

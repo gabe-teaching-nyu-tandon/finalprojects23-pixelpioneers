@@ -11,7 +11,14 @@ class BMPHandler(AbstractImageReader, AbstractImageWriter):
         img = Image.open(path, formats=["bmp"])
         img_array = np.array(img)
         return img_array
+    
+    def write(self, path: str, image: np.ndarray) -> bool:
+        img = Image.fromarray(image)
+        img.save(path)
+        return True
+
 
 if __name__ == "__main__":
     bmpHandler = BMPHandler()
     img = bmpHandler.read("data/sample.bmp")
+    bmpHandler.write("data/sample_out.bmp", img)

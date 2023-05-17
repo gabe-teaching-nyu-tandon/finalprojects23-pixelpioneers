@@ -11,7 +11,13 @@ class JPEGHandler(AbstractImageReader, AbstractImageWriter):
         img = Image.open(path, formats=["jpeg"])
         img_array = np.array(img)
         return img_array
-
+    
+    def write(self, path: str, image: np.ndarray) -> bool:
+        img = Image.fromarray(image)
+        img.save(path)
+        return True
+    
 if __name__ == "__main__":
     jpegHandler = JPEGHandler()
     img = jpegHandler.read("data/sample.jpeg")
+    jpegHandler.write("data/sample_out.jpeg", img)
