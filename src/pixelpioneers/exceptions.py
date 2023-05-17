@@ -4,6 +4,11 @@ class ImageIOError(Exception):
         super(ImageIOError, self).__init__(message)
 
 
+class ActionError(Exception):
+    def __init__(self, message: str = "Action Error: Unknown Exception"):
+        super(ActionError, self).__init__(message)
+
+
 class ImageAdjustmentError(Exception):
 
     def __init__(self, message: str = "Image Adjustment Error: Unknown Exception"):

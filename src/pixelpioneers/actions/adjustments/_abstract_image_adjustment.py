@@ -6,7 +6,7 @@ from pixelpioneers.actions.abstract_image_action import AbstractImageAction
 
 
 class AbstractImageAdjustment(AbstractImageAction):
-    name = super.name + "AbstractImageAdjustment"
+    name = "AbstractImageAdjustment"
 
     def __init__(self):
         super(AbstractImageAdjustment, self).__init__()

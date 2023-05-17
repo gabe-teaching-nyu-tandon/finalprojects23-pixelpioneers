@@ -30,20 +30,6 @@ class AbstractImageWriter(ABC):
     def __init__(self):
         pass
 
-    @staticmethod
-    def _is_valid_image_data(image: np.ndarray) -> bool:
-        """
-        Function used to check validity of image being written
-        :param np.ndarray image: RGB image
-        :return: True if write image is valid else False
-        :rtype: bool
-        """
-        if image is None:
-            return False
-        if image.ndim != 3 or image.shape[2] != 3:
-            return False
-        return True
-
     @abstractmethod
     def write(self, path: str, image: np.ndarray) -> bool:
         """

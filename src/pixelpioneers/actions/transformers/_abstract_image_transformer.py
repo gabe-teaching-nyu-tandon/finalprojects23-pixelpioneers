@@ -6,7 +6,7 @@ from pixelpioneers.actions.abstract_image_action import AbstractImageAction
 
 
 class AbstractImageTransformer(AbstractImageAction):
-    name = super.name + "AbstractImageTransformer"
+    name = "AbstractImageTransformer"
 
     def __init__(self):
         super(AbstractImageTransformer, self).__init__()
