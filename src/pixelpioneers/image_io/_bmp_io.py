@@ -9,13 +9,14 @@ from pixelpioneers.image_io._abstract_io import AbstractImageReader, AbstractIma
 logger = logging.getLogger(__name__)
 
 
-class BMPHandler(AbstractImageReader, AbstractImageWriter):
+class JPEGHandler(AbstractImageReader, AbstractImageWriter):
 
     def read(self, path: str) -> np.ndarray:
-            img = Image.open(path, formats=["bmp"])
-            img_array = np.array(img)
-            return img_array
+        img = Image.open(path, formats=["jpeg"])
+        img_array = np.array(img)
+        return img_array
+
 
 if __name__ == "__main__":
-    bmpHandler = BMPHandler()
-    img = bmpHandler.read("data/sample.bmp")
+    jpegHandler = JPEGHandler()
+    img = jpegHandler.read("data/sample.jpeg")
