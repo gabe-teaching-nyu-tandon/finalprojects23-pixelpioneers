@@ -1,7 +1,7 @@
 import numpy as np
 
 from pixelpioneers.actions.adjustments._abstract_image_adjustment import AbstractImageAdjustment
-from pixelpioneers.exceptions import ImageTransformationError
+from pixelpioneers.exceptions import ImageAdjustmentError
 
 
 class ContrastAdjustment(AbstractImageAdjustment):
@@ -26,10 +26,10 @@ class ContrastAdjustment(AbstractImageAdjustment):
             return adjusted_image
         
         except AssertionError as ae:
-            raise ImageTransformationError(f"Error transforming Image: {ae}")
+            raise ImageAdjustmentError(f"Error adjusting Image: {ae}")
 
         except Exception as e:
-            raise ImageTransformationError(f"Error transforming Image: Unknown Error")
+            raise ImageAdjustmentError(f"Error adjusting Image: Unknown Error")
 
 
     
