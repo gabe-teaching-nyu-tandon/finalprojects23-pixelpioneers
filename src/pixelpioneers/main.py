@@ -1,8 +1,8 @@
 import logging
 
-from pixelpioneers.exceptions import ActionError
 from pixelpioneers.actions.unified_actions import UnifiedActions
 from pixelpioneers.cli_parser import args
+from pixelpioneers.exceptions import ActionError
 from pixelpioneers.image_io.unified_io import UnifiedIO
 from pixelpioneers.utils import get_output_paths
 

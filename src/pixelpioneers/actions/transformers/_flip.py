@@ -1,22 +1,29 @@
+import logging
+
 import cv2
 import numpy as np
-from enum import Enum
 
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
-
-class FlipMode(Enum):
-    HORIZONTAL = 1
-    VERTICAL = 2
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class FlipTransformer(AbstractImageTransformer):
     """
-    A transformer that flips an image horizontally or vertically.
+    Transformer that flips an image horizontally or vertically.
+
+    Args:
+        mode (str): The mode of the flip transformation. Supported values are "horizontal" and "vertical".
+
+    Raises:
+        ImageTransformationError: If there is an error during the image transformation.
+
     """
 
-    def __init__(self, mode: FlipMode):
+    def __init__(self, mode: str):
         """
         Initializes a new instance of the FlipTransformer class.
 
@@ -26,17 +33,35 @@ class FlipTransformer(AbstractImageTransformer):
 
     def apply(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
         """
-        Applies the flip transformation to the image.
+        Applies the flip transformation to the given image.
 
-        :param image: The input image.
-        :return: The flipped image.
+        Args:
+            image (np.ndarray): The input image to be transformed.
+            *args: Additional positional arguments (unused).
+            **kwargs: Additional keyword arguments (unused).
+
+        Returns:
+            np.ndarray: The transformed image.
+
+        Raises:
+            ImageTransformationError: If there is an error during the image transformation.
+
         """
-        if image is None:
-            raise ImageTransformationError("Function parameter image: cannot be None")
+        try:
+            assert image is not None, "Function parameter image: cannot be None"
+            logger.info("Image received for transformation")
+            if self.mode == "horizontal":
+                logger.info("Applying horizontal flip transformation")
+                return cv2.flip(image, 1)
+            elif self.mode == "vertical":
+                logger.info("Applying vertical flip transformation")
+                return cv2.flip(image, 0)
+            raise ImageTransformationError(f"Invalid flip mode: {self.mode}")
 
-        if self.mode == FlipMode.HORIZONTAL:
-            return cv2.flip(image, 1)
-        elif self.mode == FlipMode.VERTICAL:
-            return cv2.flip(image, 0)
+        except AssertionError as ae:
+            logger.error(f"AssertionError: {ae}")
+            raise ImageTransformationError(f"Error transforming Image: {ae}")
 
-        raise ImageTransformationError(f"Invalid flip mode: {self.mode}")
+        except Exception as e:
+            logger.error(f"Unknown Error: {e}")
+            raise ImageTransformationError(f"Error transforming Image: Unknown Error")
