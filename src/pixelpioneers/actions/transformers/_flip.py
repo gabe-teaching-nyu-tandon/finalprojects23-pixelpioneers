@@ -1,12 +1,19 @@
 import cv2
 import numpy as np
 import logging
+from enum import Enum
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+class FlipMode(Enum):
+    HORIZONTAL = 1
+    VERTICAL = 2
+
 
 class FlipTransformer(AbstractImageTransformer):
     """
@@ -19,9 +26,14 @@ class FlipTransformer(AbstractImageTransformer):
         ImageTransformationError: If there is an error during the image transformation.
 
     """
-    def __init__(self, mode: str):
+
+    def __init__(self, mode: FlipMode):
+        """
+        Initializes a new instance of the FlipTransformer class.
+
+        :param mode: The flip mode (horizontal or vertical).
+        """
         self.mode = mode
-        super(FlipTransformer, self).__init__()
 
     def apply(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
         """
@@ -42,12 +54,13 @@ class FlipTransformer(AbstractImageTransformer):
         try:
             assert image is not None, "Function parameter image: cannot be None"
             logger.info("Image received for transformation")
-            if self.mode.lower() == "horizontal":
+            if self.mode == FlipMode.HORIZONTAL:
                 logger.info("Applying horizontal flip transformation")
                 return cv2.flip(image, 1)
-            elif self.mode.lower() == "vertical":
+            elif self.mode == FlipMode.VERTICAL:
                 logger.info("Applying vertical flip transformation")
                 return cv2.flip(image, 0)
+            raise ImageTransformationError(f"Invalid flip mode: {self.mode}")
 
         except AssertionError as ae:
             logger.error(f"AssertionError: {ae}")

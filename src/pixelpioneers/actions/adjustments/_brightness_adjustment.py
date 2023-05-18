@@ -2,7 +2,7 @@ import numpy as np
 import logging
 
 from pixelpioneers.actions.adjustments._abstract_image_adjustment import AbstractImageAdjustment
-from pixelpioneers.exceptions import ImageTransformationError
+from pixelpioneers.exceptions import ImageAdjustmentError
 
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -47,7 +47,6 @@ class BrightnessAdjustment(AbstractImageAdjustment):
                                           the transformation process.
         """
         try:
-
             assert image is not None, "Function parameter image: cannot be None"
             logger.info("Applying brightness adjustment to the image.")
 
@@ -63,11 +62,15 @@ class BrightnessAdjustment(AbstractImageAdjustment):
             logger.info("Brightness adjustment applied successfully.")
 
             return img_adjusted
-
+        
         except AssertionError as ae:
             logger.error(f"Error transforming Image: {ae}")
-            raise ImageTransformationError(f"Error transforming Image: {ae}")
+            raise ImageAdjustmentError(f"Error adjusting Image: {ae}")
 
         except Exception as e:
             logger.error("Error transforming Image: Unknown Error")
-            raise ImageTransformationError(f"Error transforming Image: Unknown Error")
+            raise ImageAdjustmentError(f"Error adjusting Image: {ae}")
+
+        except Exception as e:
+            raise ImageAdjustmentError(f"Error adjusting Image: Unknown Error")
+
