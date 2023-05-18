@@ -8,16 +8,27 @@ class BrightnessAdjustment(AbstractImageAdjustment):
     name = "BrightnessAdjustment"
 
     def __init__(self, value: int):
+        assert 255 >= value >= -255, "Invalid Brightness value - Expected value in range(-255, 256)"
         self.value = value
         super(BrightnessAdjustment, self).__init__()
 
     def apply(self, image: np.ndarray) -> np.ndarray:
-        # Convert image to float to avoid overflow
-        img_float = image.astype(np.float32)
+        try:
+            assert image is not None, "Function parameter image: cannot be None"
 
-        # Apply brightness adjustment
-        img_float += self.value
+            # Convert image to float to avoid overflow
+            img_float = image.astype(np.float32)
 
-        # Clip the values to [0, 255] and convert back to uint8
-        img_adjusted = np.clip(img_float, 0, 255).astype(np.uint8)
-        return img_adjusted
+            # Apply brightness adjustment
+            img_float += self.value
+
+            # Clip the values to [0, 255] and convert back to uint8
+            img_adjusted = np.clip(img_float, 0, 255).astype(np.uint8)
+            return img_adjusted
+        
+        except AssertionError as ae:
+            raise ImageTransformationError(f"Error transforming Image: {ae}")
+
+        except Exception as e:
+            raise ImageTransformationError(f"Error transforming Image: Unknown Error")
+

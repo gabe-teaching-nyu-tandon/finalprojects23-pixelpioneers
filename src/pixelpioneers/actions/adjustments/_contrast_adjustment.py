@@ -12,14 +12,24 @@ class ContrastAdjustment(AbstractImageAdjustment):
         super(ContrastAdjustment, self).__init__()
 
     def apply(self, image: np.ndarray, *args, **kwargs) -> np.ndarray:
+        try:
+            assert image is not None, "Function parameter image: cannot be None"
+            assert image.ndim == 3, f"Expected a 3 dimensional image, Instead got a image with {image.ndim} dimensions"
+            
+            # Calculate the mean color value for each channel
+            mean = np.mean(image, axis=(0, 1), keepdims=True)
 
-        # Calculate the mean color value for each channel
-        mean = np.mean(image, axis=(0, 1), keepdims=True)
+            # Adjust the contrast
+            adjusted_image = mean + (image - mean) * self.factor
+            adjusted_image = np.clip(adjusted_image, 0, 255).astype(np.uint8)
 
-        # Adjust the contrast
-        adjusted_image = mean + (image - mean) * self.factor
-        adjusted_image = np.clip(adjusted_image, 0, 255).astype(np.uint8)
+            return adjusted_image
+        
+        except AssertionError as ae:
+            raise ImageTransformationError(f"Error transforming Image: {ae}")
 
-        return adjusted_image
+        except Exception as e:
+            raise ImageTransformationError(f"Error transforming Image: Unknown Error")
+
 
     
