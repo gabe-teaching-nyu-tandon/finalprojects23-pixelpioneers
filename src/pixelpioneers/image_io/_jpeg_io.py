@@ -5,10 +5,15 @@ from PIL import Image, UnidentifiedImageError
 
 from pixelpioneers.exceptions import ImageIOError
 from pixelpioneers.image_io._abstract_io import AbstractImageReader, AbstractImageWriter
+
+logger = logging.getLogger(__name__)
+
+
 class JPEGHandler(AbstractImageReader, AbstractImageWriter):
 
     def read(self, path: str) -> np.ndarray:
         try:
+            logger.debug(f"Reading Image from Path -> {path}")
             img = Image.open(path, formats=["jpeg"])
             img_array = np.array(img)
             return img_array
@@ -24,14 +29,16 @@ class JPEGHandler(AbstractImageReader, AbstractImageWriter):
 
     def write(self, path: str, image: np.ndarray) -> bool:
         try:
+            logger.debug(f"Writing Image -> {path}")
             img = Image.fromarray(image)
             img.save(path)
             return True
+
         except IOError as ioe:
             raise ImageIOError(f"Error writing image: {ioe}")
+
         except Exception as e:
             raise ImageIOError
-
 
 
 if __name__ == "__main__":

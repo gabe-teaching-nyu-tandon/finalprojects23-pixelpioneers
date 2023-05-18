@@ -9,13 +9,13 @@ class ActionError(Exception):
         super(ActionError, self).__init__(message)
 
 
-class ImageAdjustmentError(Exception):
+class ImageAdjustmentError(ActionError):
 
     def __init__(self, message: str = "Image Adjustment Error: Unknown Exception"):
         super(ImageAdjustmentError, self).__init__(message)
 
 
-class ImageTransformationError(Exception):
+class ImageTransformationError(ActionError):
 
     def __init__(self, message: str = "Image Transformation Error: Unknown Exception"):
         super(ImageTransformationError, self).__init__(message)
