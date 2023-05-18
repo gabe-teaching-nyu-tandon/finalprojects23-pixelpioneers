@@ -1,14 +1,15 @@
-from pathlib import Path
 import logging
+from pathlib import Path
+
 import numpy as np
 
 from pixelpioneers.exceptions import ImageIOError
 from pixelpioneers.image_io import BMPHandler, PNGHandler, JPEGHandler
 
-
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 class UnifiedIO:
     """Class for unified image input/output operations."""

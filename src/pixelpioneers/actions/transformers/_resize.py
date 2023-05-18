@@ -1,10 +1,13 @@
+import logging
+
 import cv2
 import numpy as np
-import logging
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
 logging.basicConfig(level=logging.INFO)  # Set the desired logging level
+
 
 class ResizeTransformer(AbstractImageTransformer):
     """
@@ -14,6 +17,7 @@ class ResizeTransformer(AbstractImageTransformer):
         width (int): The desired width of the resized image.
         height (int): The desired height of the resized image.
     """
+
     def __init__(self, width: int, height: int):
         self.size = [width, height]
         super(ResizeTransformer, self).__init__()

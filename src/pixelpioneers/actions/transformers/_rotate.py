@@ -1,12 +1,15 @@
+import logging
+
 import cv2
 import numpy as np
-import logging
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 class RotateTransformer(AbstractImageTransformer):
     """
@@ -16,6 +19,7 @@ class RotateTransformer(AbstractImageTransformer):
 
     :param angle: The angle (in degrees) by which to rotate the image.
     """
+
     def __init__(self, angle):
         """
         Initialize the RotateTransformer instance.

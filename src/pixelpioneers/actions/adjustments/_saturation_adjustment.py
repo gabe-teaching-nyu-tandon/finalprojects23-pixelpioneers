@@ -1,11 +1,13 @@
 import colorsys
+import logging
 
 import numpy as np
-import logging
+
 from pixelpioneers.actions.adjustments._abstract_image_adjustment import AbstractImageAdjustment
 from pixelpioneers.exceptions import ImageAdjustmentError
 
 logger = logging.getLogger(__name__)
+
 
 class SaturationAdjustment(AbstractImageAdjustment):
     name = "SaturationAdjustment"
