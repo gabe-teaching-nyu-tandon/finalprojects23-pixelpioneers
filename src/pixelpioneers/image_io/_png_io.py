@@ -26,6 +26,7 @@ class PNGHandler(AbstractImageReader, AbstractImageWriter):
             Writes a given NumPy array image to the specified path as a PNG image.
 
     """
+
     def read(self, path: str) -> np.ndarray:
         """Reads a PNG image from the specified path and returns it as a NumPy array.
 

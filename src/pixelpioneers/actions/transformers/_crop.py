@@ -1,9 +1,12 @@
-import numpy as np
 import logging
+
+import numpy as np
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
 logger = logging.getLogger(__name__)
+
 
 class CropTransformer(AbstractImageTransformer):
     """
@@ -18,6 +21,7 @@ class CropTransformer(AbstractImageTransformer):
     :param y2: The ending y-coordinate of the crop box.
     :type y2: int
     """
+
     def __init__(self, x1: int, y1: int, x2: int, y2: int):
         """
         Initialize the CropTransformer instance.

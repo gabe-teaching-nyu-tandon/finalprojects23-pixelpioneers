@@ -1,5 +1,7 @@
-import numpy as np
 import logging
+
+import numpy as np
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 

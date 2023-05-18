@@ -1,5 +1,7 @@
-import numpy as np
 import logging
+
+import numpy as np
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
@@ -15,6 +17,7 @@ class InvertTransformer(AbstractImageTransformer):
 
     :param AbstractImageTransformer: The base class for image transformers.
     """
+
     def __init__(self):
         """
         Initialize the InvertTransformer object.

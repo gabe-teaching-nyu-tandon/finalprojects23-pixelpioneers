@@ -1,7 +1,7 @@
+import logging
+
 import cv2
 import numpy as np
-import logging
-from enum import Enum
 
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
@@ -9,10 +9,6 @@ from pixelpioneers.exceptions import ImageTransformationError
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-class FlipMode(Enum):
-    HORIZONTAL = 1
-    VERTICAL = 2
 
 
 class FlipTransformer(AbstractImageTransformer):
@@ -27,7 +23,7 @@ class FlipTransformer(AbstractImageTransformer):
 
     """
 
-    def __init__(self, mode: FlipMode):
+    def __init__(self, mode: str):
         """
         Initializes a new instance of the FlipTransformer class.
 
@@ -54,10 +50,10 @@ class FlipTransformer(AbstractImageTransformer):
         try:
             assert image is not None, "Function parameter image: cannot be None"
             logger.info("Image received for transformation")
-            if self.mode == FlipMode.HORIZONTAL:
+            if self.mode == "horizontal":
                 logger.info("Applying horizontal flip transformation")
                 return cv2.flip(image, 1)
-            elif self.mode == FlipMode.VERTICAL:
+            elif self.mode == "vertical":
                 logger.info("Applying vertical flip transformation")
                 return cv2.flip(image, 0)
             raise ImageTransformationError(f"Invalid flip mode: {self.mode}")
