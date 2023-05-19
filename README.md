@@ -1,5 +1,7 @@
 # PixelPioneers: A Lightweight Python Library for Essential Image Processing
 
+[![Deploy static content to Pages](https://github.com/gabe-teaching-nyu-tandon/finalprojects23-pixelpioneers/actions/workflows/pages_deployment.yml/badge.svg?branch=main)](https://github.com/gabe-teaching-nyu-tandon/finalprojects23-pixelpioneers/actions/workflows/pages_deployment.yml) [![Python package](https://github.com/gabe-teaching-nyu-tandon/finalprojects23-pixelpioneers/actions/workflows/pytest.yml/badge.svg)](https://github.com/gabe-teaching-nyu-tandon/finalprojects23-pixelpioneers/actions/workflows/pytest.yml)
+
 PixelPioneers is a lightweight Python library designed to perform basic image processing tasks, such as color representation and filtering. This library aims to provide a user-friendly interface and easy-to-understand functions for developers and researchers who require essential image processing capabilities without the extensive features of more complex libraries like OpenCV.
 
 # Project Setup
