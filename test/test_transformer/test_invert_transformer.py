@@ -1,7 +1,7 @@
 import numpy as np
-import pytest
-from pixelpioneers.exceptions import ImageTransformationError
+
 from pixelpioneers.actions.transformers import InvertTransformer
+
 
 class TestInvertTransformer:
 
@@ -9,8 +9,8 @@ class TestInvertTransformer:
         transformer = InvertTransformer()
 
         # Test case 1: Valid input image
-        image = np.array([[100, 150, 200], [50, 75, 100]])
-        expected_output = np.array([[155, 105, 55], [205, 180, 155]])
+        image = np.array([[[100, 150, 200], [50, 75, 100]]])
+        expected_output = np.array([[[155, 105, 55], [205, 180, 155]]])
         assert np.array_equal(transformer.apply(image), expected_output)
 
         # Test case 2: None image
@@ -34,4 +34,3 @@ class TestInvertTransformer:
         # with pytest.raises(ImageTransformationError):
         #     transformer.apply = mock_function
         #     transformer.apply(image)
-

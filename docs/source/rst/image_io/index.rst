@@ -19,4 +19,3 @@ Image IO
    bmp_io
    jpeg_io
    png_io
-   svg_io

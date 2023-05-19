@@ -1,5 +1,7 @@
-import numpy as np
 import logging
+
+import numpy as np
+
 from pixelpioneers.actions.transformers._abstract_image_transformer import AbstractImageTransformer
 from pixelpioneers.exceptions import ImageTransformationError
 
@@ -9,25 +11,11 @@ class GrayscaleTransformer(AbstractImageTransformer):
     GrayscaleTransformer is a class that applies grayscale transformation to an image.
 
     This class inherits from the AbstractImageTransformer class.
-
-    Attributes:
-        None
-
-    Methods:
-        apply(image: np.ndarray, *args, **kwargs) -> np.ndarray:
-            Applies grayscale transformation to the input image.
-
     """
 
     def __init__(self):
         """
         Initialize the GrayscaleTransformer instance.
-
-        Args:
-            None
-
-        Returns:
-            None
         """
         super(GrayscaleTransformer, self).__init__()
 

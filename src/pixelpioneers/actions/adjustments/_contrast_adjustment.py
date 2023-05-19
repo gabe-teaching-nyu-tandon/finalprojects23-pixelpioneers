@@ -65,4 +65,3 @@ class ContrastAdjustment(AbstractImageAdjustment):
 
         except Exception as e:
             raise ImageAdjustmentError(f"Error transforming Image: Unknown Error")
-
